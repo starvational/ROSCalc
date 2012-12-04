@@ -1,5 +1,23 @@
-/*
+/* 
+ NewtonRaphsonIRRCalculator.cs - Calculate the Internal rate of return for a given set of cashflows.
+ Zainco Ltd
+ Author: Joseph A. Nyirenda <joseph.nyirenda@gmail.com>
+             Mai Kalange<code5p@yahoo.co.uk>
+ Copyright (c) 2008 Joseph A. Nyirenda, Mai Kalange, Zainco Ltd
 
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of version 2 of the GNU General Public
+ License as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+
+ You should have received a copy of the GNU General Public
+ License along with this program; if not, write to the
+ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ Boston, MA 02111-1307, USA.
 */
 package Zainco.NewtonRaphson.IRRCalculator.Domain
 {
@@ -9,13 +27,15 @@ package Zainco.NewtonRaphson.IRRCalculator.Domain
 	{
 		private var m_cashflows:ArrayCollection;
 		
-		private const m_tolerance:Number = 0.00000001;
+		private const m_tolerance:Number 	 = 0.00000001;
 		private const m_maxIterations:Number = 50000;
+		
 		private const MIN_NO_CASH_FLOW_PERIODS:Number = 2;
 		
 		private var m_result:Number;
 		private var m_numberOfIterations:Number = 0;
 
+		// Initialize with a collection of cashflow values (at least 2 required)
 		public function NewtonRaphsonIRRCalculator(cashflows:ArrayCollection)
 		{
 			m_cashflows = cashflows;
@@ -48,7 +68,10 @@ package Zainco.NewtonRaphson.IRRCalculator.Domain
 			return initialGuess;
 		}
 		
-		// 
+		// ICalculator implementation:  attemps to find the IRR using
+		// the Newton-Rhapson method
+		//
+		// Returns the IRR if found, NaN otherwise
 		public function calculate():Number
 		{
 			m_result = NaN;
