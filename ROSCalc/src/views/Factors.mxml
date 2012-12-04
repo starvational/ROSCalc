@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		actionBarVisible="true" destructionPolicy="never"
+		initialize="viewIinitializationHandler(event)" overlayControls="false" tabBarVisible="true"
+		title="Compound Interest Factors">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import seattleu.softwareeconomics.controllers.InterestFactorsController;
+			import seattleu.softwareeconomics.models.InterestFactorsModel;
+			
+			[Bindable]
+			public var Model:InterestFactorsModel;
+			private var Controller:InterestFactorsController;
+			
+			protected function viewIinitializationHandler(event:FlexEvent):void
+			{
+				Model = new InterestFactorsModel();
+				Controller = new InterestFactorsController(Model);
+			}
+			
+			protected function computeFactorsButton_clickHandler(event:MouseEvent):void
+			{
+				var interestNum:Number = Number(interestRate.text);
+				if (interestRate.text.length == 0 || interestNum == 0 || interestNum > 100)
+				{
+					showErrorPopup("Interest must be between 0-100");
+					return;
+				}
+				
+				var periodsNum:Number = Number(compoundingPeriods.text)
+				if (periodsNum == 0 || periodsNum < 0)
+				{
+					showErrorPopup("Period must be greater than 0");
+					return;
+				}
+				
+				Controller.updateInterestFactors(interestNum, periodsNum);
+			}
+			
+			private function showErrorPopup(message:String):void
+			{
+				var alertCallout:PopoutAlert = new PopoutAlert();
+				alertCallout.setValues("Please try again", message);
+				alertCallout.open(computeFactorsButton, true);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<!--graph paper ref:  http://www.demilked.com/free-paper-textures-backgrounds/ -->
+	<s:BitmapImage width="100%" height="100%" scaleMode="stretch"
+				   source="@Embed('assets/white-linen-paper-texture.jpg')"/>
+	
+	<!-- Solution to scrolling an entire view in Flex 4.5 Mobile
+		 ref:  http://stackoverflow.com/questions/8208998/getting-a-custom-view-to-scroll-in-flex-4-5-mobile
+	-->
+	<s:Scroller id="scroller" left="10" right="10" top="10" bottom="10">
+		<s:VGroup x="0" y="0" width="100%" height="100%">
+			<!-- Component group:  interest rate, compounding periods, calculate factors -->
+			<s:VGroup width="100%" horizontalAlign="left" rowHeight="30">
+				<s:HGroup width="100%">
+					<s:VGroup height="100%">
+						<s:Spacer width="62" height="12"/>
+						<s:Label text="Interest Rate (%)"/>
+						<s:Spacer width="62" height="18"/>
+						<s:Label text="Compounding Periods (n)"/>
+					</s:VGroup>
+					<s:VGroup width="100%" paddingTop="4">
+						<s:TextInput id="interestRate" width="90%" restrict=".0-9"
+									 softKeyboardType="number"/>
+						<s:TextInput id="compoundingPeriods" width="90%" restrict="0-9"
+									 softKeyboardType="number"/>
+					</s:VGroup>
+				</s:HGroup>
+				<s:HGroup width="100%">
+					<s:Spacer width="100%" height="29"/>
+					<s:Button id="computeFactorsButton" width="400" height="75"
+							  label="Compute Factors"
+							  click="computeFactorsButton_clickHandler(event)"/>
+					<s:Spacer width="100%" height="29"/>
+				</s:HGroup>
+			</s:VGroup>
+			<s:Spacer width="135" height="29"/>
+			<s:VGroup x="0" y="240" width="100%">
+				
+				<!-- Single payment -->
+				<s:VGroup width="100%">
+					<s:Label width="100%" fontWeight="bold" text="Single-Payment"/>
+					<s:Spacer width="34" height="14"/>
+					<s:HGroup width="100%">
+						<s:VGroup width="100%">
+							<s:Label fontSize="20" text="Compound-amount (F/P)"/>
+							<s:TextInput id="FP" width="90%" editable="false"
+										 text="{Model.CompoundAmountFP.toFixed(5)}"/>
+						</s:VGroup>
+						<s:VGroup width="100%">
+							<s:Label fontSize="20" text="Present-worth (P/F)"/>
+							<s:TextInput id="PF" width="90%" editable="false"
+										 text="{Model.PresentWorthPF.toFixed(5)}"/>
+						</s:VGroup>
+					</s:HGroup>
+				</s:VGroup>
+				
+				<s:Spacer width="135" height="29"/>
+				<s:Label width="100%" fontWeight="bold" text="Equal-payment Series"/>
+				<s:Spacer width="34" height="14"/>
+				
+				<!-- Equal payment series -->
+				<s:VGroup width="100%">
+					<s:HGroup width="100%">
+						<s:VGroup width="100%">
+							<s:Label fontSize="20" text="Compound-amount (F/A)"/>
+							<s:TextInput id="FA" width="90%" editable="false"
+										 text="{Model.CompoundAmountFA.toFixed(5)}"/>
+						</s:VGroup>
+						<s:VGroup width="100%">
+							<s:Label fontSize="20" text="Sinking-fund (A/F)"/>
+							<s:TextInput id="AF" width="90%" editable="false"
+										 text="{Model.SinkingFundAF.toFixed(5)}"/>
+						</s:VGroup>
+					</s:HGroup>
+				</s:VGroup>
+				<s:VGroup width="100%">
+					<s:HGroup width="100%">
+						<s:VGroup width="100%">
+							<s:Label fontSize="20" text="Present-worth (P/A)"/>
+							<s:TextInput id="PA" width="90%" editable="false"
+										 text="{Model.PresentWorthPA.toFixed(5)}"/>
+						</s:VGroup>
+						<s:VGroup width="100%">
+							<s:Label fontSize="20" text="Capital-recovery (A/P)"/>
+							<s:TextInput id="AP" width="90%" editable="false"
+										 text="{Model.CapitalRecoveryAP.toFixed(5)}"/>
+						</s:VGroup>
+					</s:HGroup>
+				</s:VGroup>
+			</s:VGroup>
+		</s:VGroup>
+	</s:Scroller>
+
+</s:View>

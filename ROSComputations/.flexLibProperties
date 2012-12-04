@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="seattleu.softwareeconomics.controllers.InterestFactorsController"/>
+    <classEntry path="seattleu.softwareeconomics.math.InterestFactorCalculator"/>
+    <classEntry path="seattleu.softwareeconomics.models.CashFlow"/>
+    <classEntry path="seattleu.softwareeconomics.models.CashflowStreamModel"/>
+    <classEntry path="seattleu.softwareeconomics.models.InterestFactorsModel"/>
+    <classEntry path="seattleu.softwareeconomics.models.LoanPayment"/>
+    <classEntry path="seattleu.softwareeconomics.models.LoanScheduleModel"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

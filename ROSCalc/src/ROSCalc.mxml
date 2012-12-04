@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TabbedViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	applicationComplete="onApplicationComplete()" 
+	>
+	
+	<!--to export to Air (desktop app) - set the application to	width="480" height="775"
+	  -->
+
+	<!-- to add a splashscreen add the line below to the TabbedViewNavigatorApplication attributes
+	splashScreenImage="@Embed('assets/Accessories-calculator-256x256.png')" splashScreenScaleMode="letterbox"
+	-->
+	
+	<!-- Styling your Flex 4.5 Mobile Application Tabs and ActionBar
+		 ref:  http://devgirl.org/2011/05/09/styling-the-flex-4-5-mobile-application-tabs-and-actionbar/
+	-->
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		s|ActionBar
+		{
+			/*chromeColor: #29AAD5;*/
+			chromeColor: #708090;
+			titleAlign: center;
+			fontSize: 40;
+			fontFamily: "Comic Sans MS";
+			defaultButtonAppearance: beveled;
+		}
+		
+		s|TabbedViewNavigator #tabBar
+		{
+			/*chromeColor: #29AAD5;*/
+			chromeColor: #708090;
+			color: #FFFFFF;
+			fontSize: 12;
+			fontWeight: bold;
+			iconPlacement: top;
+			interactionMode: mouse;
+			textShadowAlpha: 0;
+		}
+		
+		/*  Fixes Mobile TextInput lag while inside a Scroller
+			reference:  http://stackoverflow.com/questions/9335337/flex-mobile-textinput-in-scroller-text-lag
+		*/
+		s|TextInput
+		{
+			/* skinClass: ClassReference("spark.skins.mobile.StageTextInputSkin"); */
+			
+			/* The below fixes the lag that may be encountered while rotating the screen
+			 * but it breaks compatibility with the keyboard softkeys (prevents numbers from showing)
+			 */
+			skinClass: ClassReference("spark.skins.mobile.TextInputSkin")
+		}
+		s|TextArea
+		{
+			skinClass: ClassReference("spark.skins.mobile.TextAreaSkin")
+		}
+		s|Button
+		{
+			skinClass: ClassReference("spark.skins.mobile.ButtonSkin")
+		}
+	</fx:Style>
+	
+	<fx:Script>
+		<![CDATA[
+			import flash.events.UncaughtErrorEvent;
+			
+			import views.PopoutAlert; // Requires Flash Player 10.1
+
+			protected function onApplicationComplete():void
+			{
+				// Get notified whan a global error occurs
+				loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onError);
+				trace(this.width);
+				trace(this.height);
+			}
+
+			// Handle Global Errors
+			protected function onError(e:UncaughtErrorEvent):void
+			{
+    			e.preventDefault();
+    			trace("An error has occurred and been caught by the global error handler: " + e.error.toString(), "My Global Error Handler");
+				
+				var alertCallout:PopoutAlert = new PopoutAlert();
+				alertCallout.setValues("Houston we have a problem", e.error.toString());
+				alertCallout.open(this, true);
+			}
+		]]>
+	</fx:Script>
+
+	<s:ViewNavigator label='Factors' firstView='views.Factors' width="100%" height="100%" icon="@Embed('assets/percent.png')"/>
+	<s:ViewNavigator label='Loan' firstView='views.Loan' width="100%" height="100%" icon="@Embed('assets/bank.png')"/>
+	<s:ViewNavigator label='Cashflow' firstView='views.CashflowStream' width="100%" height="100%" icon="@Embed('assets/bills_and_coins.png')"/>
+</s:TabbedViewNavigatorApplication>

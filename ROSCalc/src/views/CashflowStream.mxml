@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark" title="Cashflows" 
+		 destructionPolicy="never"
+		 initialize="viewIinitializationHandler(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import seattleu.softwareeconomics.models.CashflowStreamModel;
+			
+			[Bindable]
+			public var Model:CashflowStreamModel;
+			
+			protected function viewIinitializationHandler(event:FlexEvent):void
+			{
+				Model = new CashflowStreamModel();	
+			}
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				// Validate the cash flows
+				var regex:RegExp = /\r| /;
+				var cashflowTokens:Array = cashflows.text.split(regex);
+				
+				var cashFlowNumbers:ArrayCollection = new ArrayCollection();
+				for each (var token:String in cashflowTokens)
+				{
+					// ignore empty 
+					if (token.length == 0 || token == "")
+					{
+						continue;
+					}
+					else
+					{
+						var cashflow:Number = Number(token);
+						if (isNaN(cashflow))
+						{
+							showErrorPopup("Invalid cashflow: " + token);
+							return;
+						}
+						else
+						{
+							cashFlowNumbers.addItem(cashflow);
+						}
+					}
+				}
+				
+				// Validate the interest rate input
+				var interestNum:Number = Number(interestRate.text);
+				if (interestRate.text.length == 0 || interestNum == 0 || interestNum > 100)
+				{
+					showErrorPopup("Interest must be between 0-100");
+					return;
+				}
+				
+				// Process the cash flow stream
+				Model.updateCashflowStream(cashFlowNumbers, interestNum);
+			}
+			
+			private function showErrorPopup(message:String):void
+			{
+				var alertCallout:PopoutAlert = new PopoutAlert();
+				alertCallout.setValues("Please try again", message);
+				alertCallout.open(resultsButton, true);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<!--graph paper ref:  http://www.demilked.com/free-paper-textures-backgrounds/ -->
+	<s:BitmapImage width="100%" height="100%" scaleMode="stretch"
+				   source="@Embed('assets/white-linen-paper-texture.jpg')"/>
+	
+	
+	<s:Scroller id="scroller" left="10" right="10" top="10" bottom="10">
+		<s:VGroup x="0" y="0" width="100%" height="100%">
+			<!-- top portion -->
+			<s:VGroup width="100%" height="229">
+				<s:Label width="100%" fontWeight="bold" text="Enter Net Cash Flows:"/>
+				<s:TextArea id="cashflows" width="100%" height="108" restrict=".0-9\-"/>
+				<s:HGroup width="100%" height="100%">
+					<s:VGroup width="100%" height="100%">
+						<s:Label text="Interest Rate (%)"/>
+						<s:TextInput id="interestRate" width="95%" restrict=".0-9"
+									 softKeyboardType="number"/>
+						<s:Spacer width="34" height="9"/>
+					</s:VGroup>
+					<s:VGroup width="100%" height="100%">
+						<s:Spacer width="100%" height="14"/>
+						<s:Button id="resultsButton" width="219" height="58" label="Results"
+								  click="button1_clickHandler(event)"/>
+						<s:Spacer width="100%" height="9"/>
+					</s:VGroup>
+				</s:HGroup>
+				<s:Spacer width="34" height="14"/>
+			</s:VGroup>
+			
+			<!-- results label -->
+			<s:VGroup width="100%" height="28">
+				<s:Label width="100%" fontWeight="bold" text="Results"/>
+				<s:Spacer width="34" height="11"/>
+			</s:VGroup>
+			
+			<!-- Monthly payment, total interest paid -->
+			<s:VGroup width="100%">
+				<s:HGroup width="100%">
+					<s:VGroup width="100%">
+						<s:Label fontSize="20" text="Present Worth PW(i)"/>
+						<s:TextInput id="presentWorth" text="{Model.presentWorthString}" width="90%" editable="false" />
+					</s:VGroup>
+					<s:VGroup width="100%">
+						<s:Label fontSize="20" text="Future Worth FW(i)"/>
+						<s:TextInput id="futureWorth" text="{Model.futureWorthString}" width="90%" editable="false" />
+					</s:VGroup>
+				</s:HGroup>
+			</s:VGroup>
+			<s:HGroup width="100%">
+				<s:VGroup width="100%">
+					<s:Label fontSize="20" text="Annual Equivalent AE(i)"/>
+					<s:TextInput id="annualEquivalent" text="{Model.annualEquivalentString}" width="90%" editable="false" />
+				</s:VGroup>
+				<s:VGroup width="100%">
+					<s:Label fontSize="20" text="Internal Rate of Return"/>
+					<s:TextInput id="internalRateOfReturn" text="{Model.internalRateOfReturnPercentageString}" width="90%" editable="false" />
+				</s:VGroup>
+			</s:HGroup>
+			<s:DataGrid width="100%" height="100%" dataProvider="{Model.cashflowStream}">
+				<s:columns>
+					<s:ArrayList>
+						<s:GridColumn dataField="period" headerText="Year" width="70"/>
+						<s:GridColumn dataField="discountedCashflowValueString" headerText="Discounted $" />
+						<s:GridColumn dataField="projectBalanceString" headerText="Project Balance"  />
+					</s:ArrayList>
+				</s:columns>
+			</s:DataGrid>
+		</s:VGroup>
+	</s:Scroller>	
+</s:View>

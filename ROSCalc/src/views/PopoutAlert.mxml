@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Callout xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   horizontalPosition="start"
+		   verticalPosition="after">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			[Bindable]
+			public var caption:String;
+			[Bindable]
+			public var message:String;
+			
+			public function setValues(caption:String, message:String):void
+			{
+				this.caption = caption;
+				this.message = message;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<!-- Add a callout container to a mobile application
+		 ref:  http://help.adobe.com/en_US/flex/mobileapps/WS7dd5c1363434bb706aafb086131b54b6ec7-8000.html
+	-->
+	<s:VGroup width="100%" height="100%" horizontalAlign="center">
+		<s:Label  text="{caption}" fontWeight="bold" fontSize="30" color="0xAA0D0A" paddingTop="10"/>
+		<s:TextArea text="{message}" width="90%" editable="false"/>
+		<s:Button id="okButton" label="OK" click="this.close();" width="40%" />
+		<s:Spacer width="100%" height="5" />
+	</s:VGroup>
+	
+</s:Callout>
