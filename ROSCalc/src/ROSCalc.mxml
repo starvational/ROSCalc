@@ -3,10 +3,6 @@
 	xmlns:s="library://ns.adobe.com/flex/spark"
 	applicationComplete="onApplicationComplete()" 
 	>
-	
-	<!--to export to Air (desktop app) - set the application to	width="480" height="775"
-	  -->
-
 	<!-- to add a splashscreen add the line below to the TabbedViewNavigatorApplication attributes
 	splashScreenImage="@Embed('assets/Accessories-calculator-256x256.png')" splashScreenScaleMode="letterbox"
 	-->
