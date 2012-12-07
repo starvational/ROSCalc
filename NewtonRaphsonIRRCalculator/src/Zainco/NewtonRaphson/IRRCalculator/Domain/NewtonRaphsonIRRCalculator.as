@@ -65,6 +65,12 @@ package Zainco.NewtonRaphson.IRRCalculator.Domain
 		private function initialGuess():Number
 		{
 			var initialGuess:Number = -1 * (1 + ( Number(m_cashflows[1])/Number(m_cashflows[0]) ));
+			
+			if (initialGuess <= -1)
+			{
+				initialGuess = -0.999999999;
+			}
+			
 			return initialGuess;
 		}
 		
